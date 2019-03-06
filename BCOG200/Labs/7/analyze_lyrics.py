@@ -25,9 +25,11 @@ class Artist:
 
     def get_freq_dict(self):#place holders
         for song in self.song_list:
-            a = counter(self.lyric_freq_dict)
-            b = counter(song.lyric_freq_dict)
-            c=a+b
+            for word in song.lyric_list:
+                if word in self.lyric_freq_dict:
+                    self.lyric_freq_dict[word] +=1
+                else:
+                    self.lyric_freq_dict[word] = 1
 
     def get_word_type_sum(self):
         for song in self.song_list:    
@@ -98,7 +100,11 @@ def main():
             new_song_instance.get_word_token_sum()
             new_artist_instance.song_list.append(new_song_instance)
 
+        new_artist_instance.get_word_token_sum()
+        new_artist_instance.get_word_type_sum()
+        new_artist_instance.get_freq_dict()
         artist_object_list.append(new_artist_instance)
+
 
     for i in range(len(artist_object_list)):
         artist = artist_object_list[i]
