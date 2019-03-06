@@ -12,10 +12,9 @@ import os
 #           Then, combine the freq dictionaries for each song to create one summary freq dictionary for the artist
 #           Then you can count the artist's overall types and tokens from that summary dictionary
 
-
 class Artist:
 
-    def __init__(self, name, directory_location):
+    def __init__(self, name, directory_location):#this sets up the parameters for the class artist
         self.name = name
         self.directory_location = directory_location
         self.num_songs = 0
@@ -24,19 +23,23 @@ class Artist:
         self.num_tokens = 0
         self.num_types = 0
 
-    def get_freq_dict(self):
-        pass
+    def get_freq_dict(self):#place holders
+        for song in self.song_list:
+            a = counter(self.lyric_freq_dict)
+            b = counter(song.lyric_freq_dict)
+            c=a+b
 
     def get_word_type_sum(self):
-        pass
+        for song in self.song_list:    
+            self.num_types += len(song.lyric_freq_dict)
 
     def get_word_token_sum(self):
-        pass
-
+        for song in self.song_list:
+            self.num_tokens += len(song.lyric_list)
 
 class Song:
 
-    def __init__(self, title, file_location):
+    def __init__(self, title, file_location):#sets up stuff for the class song
         self.title = title
         self.file_location = file_location
         self.lyric_list = []
@@ -44,41 +47,31 @@ class Song:
         self.num_tokens = 0
         self.num_types = 0
 
-        # call get_lyrics, passed the file location, stores the lyric list
-        # call get_freq_dict
-        # call get_word_type_sum
-        # call get_word_token_sum
-
-
-    def get_lyrics(self):
-        f = open(self.file_location)
-        for line in f:
-            data = line.strip('\n')
-            token_list = data.split(0)
-            self.lyric_list.append(token_list)
-        f.close()
+    def get_lyrics(self):#also place holders
+        file = open(self.file_location)
+        self.lyric_list= file.read().split(' ')
 
     def get_freq_dict(self):
-        for line in self.lyric_list:
-            for token in line:
-                if token in self.lyric_freq_dict:
-                    self.lyric_freq_dict[token] += 1
-                else:
-                    self.lyric_freq_dict[token] = 1
+        for word in self.lyric_list:
+            if word in self.lyric_freq_dict:
+                self.lyric_freq_dict[word] +=1
+            else:
+                self.lyric_freq_dict[word] =1
 
     def get_word_type_sum(self):
-        pass
+        for lyric_key in self.lyric_freq_dict:
+            self.num_types += self.lyric_freq_dict[lyric_key]
 
     def get_word_token_sum(self):
-        pass
+        self.num_tokens= len(self.lyric_list)
 
 
-def remove_hidden_files(input_list):
+def remove_hidden_files(input_list):# this creates the function, there is a list in it
     output_list = []
     for item in input_list:
-        if item[0] != '.':
+        if item[0] != '.':# if the first item isnt a period then you can append it to the output list
             output_list.append(item)
-    return output_list
+    return output_list#then prints the output
 
 
 def main():
@@ -87,18 +80,22 @@ def main():
     artist_directory_list = os.listdir(input_directory)
     artist_list = remove_hidden_files(artist_directory_list)
 
-    for artist_name in artist_list:
+    for artist_name in artist_list:#creates instances, goes through kanye and taylors stuff 10 times each bc 10 songs
 
         artist_directory = input_directory+artist_name
-        new_artist_instance = Artist(artist_name, artist_directory)
-        song_directory_list = os.listdir(artist_directory)
+        new_artist_instance = Artist(artist_name, artist_directory)#this instanciates artists for the class, and we are assigning a class, the parameters are being extracted form out input
+        song_directory_list = os.listdir(artist_directory)#creating a list of artist songs from artist directory
         song_filename_list = remove_hidden_files(song_directory_list)
 
-        for song_filename in song_filename_list:
-            song_title = song_filename[:-4]
-            song_location = artist_directory + "/" + song_title
-            new_song_instance = Song(song_title, song_location)
-
+        for song_filename in song_filename_list:#goes through each song in our song file list and goes into anye, looks at all its songs, and the title will be the songfile name
+            song_title = song_filename[:-4]# just the song title will print not a .txt
+            song_location = artist_directory + "/" + song_title+ ".txt"#goes into each artist directory
+            new_song_instance = Song(song_title, song_location)#creates an instance and with each instance it neds a title and a location
+            new_artist_instance.song_list.append(new_song_instance)
+            new_song_instance.get_lyrics()
+            new_song_instance.get_freq_dict()
+            new_song_instance.get_word_type_sum()
+            new_song_instance.get_word_token_sum()
             new_artist_instance.song_list.append(new_song_instance)
 
         artist_object_list.append(new_artist_instance)
@@ -112,3 +109,4 @@ def main():
 
 
 main()
+
